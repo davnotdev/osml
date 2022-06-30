@@ -2,32 +2,33 @@
 
 Too lazy to learn Hugo or any of the other static site generators (which you should definitely use)?
 Maybe your *too cool* to use those and need something so "minimal", that it's straight up stupid.
-That's what `OSML` aims to be!
+That's what **OSML** aims to be!
 Don't worry.
-Where `OSML` lacks functionality, it makes up for with a flexible plugin system!
+Where **OSML** lacks functionality, it makes up for with a flexible plugin system!
 
 ## Getting Started
 
 > This assumes you've grabbed the source, compiled it, and have the binaries added somewhere in PATH
 
-`osmlmk c   #  Create a brand new OSML Project` 
-`osmlmk b   #  Build your OSML Project`  
-`osmlmk p   #  Purge your compiled html`
-`osmlmk l   #  (WIP) Live reload changes as you go`
+```
+osmlmk c   #  Create a brand new OSML Project
+osmlmk b   #  Build your OSML Project
+osmlmk p   #  Purge your compiled html  
+osmlmk l   #  (WIP) Live reload changes as you go
+```
 
 Now that you have your project ready to go, take a look at the project structure.
 You should see `src/`, `static/`, `dist/`
-Put your `OSML` into `src`.
-Every file in `src` will map directly to an html file in `dist/` after compilation.
+Put your `OSML` into `src/`.
+Every file in `src/` will map directly to an html file in `dist/` after compilation.
 For example, `src/index.osml` --> `dist/index.html`.
-`static` is for static files like images where `static/` --> `dist/static/`.
+`static/` is for static files like images where `static/cat.gif` --> `dist/static/cat.gif`.
 
 ### Using OSML
 
 > hello\_world.osml
 
 ```
-
 [section
     
     [title Hello There!]
@@ -62,12 +63,4 @@ For example, `src/index.osml` --> `dist/index.html`.
 ### Core Block Types
 
 TODO
-
-## Advanced 
-
-### Using the Compiler
-
-`osmlc {input} -o=output.osml`  
-`--deps` or `-d` to list file dependencies.  
-`--lame` or `-l` to disable colors.
 
