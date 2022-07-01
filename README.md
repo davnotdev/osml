@@ -18,11 +18,11 @@ osmlmk l   #  (WIP) Live reload changes as you go
 ```
 
 Now that you have your project ready to go, take a look at the project structure.
-You should see `src/`, `static/`, `dist/`
-Put your `OSML` into `src/`.
+You should see `src/`, `static/`, `dist/`.
+Put your **OSML** into `src/`.
 Every file in `src/` will map directly to an html file in `dist/` after compilation.
-For example, `src/index.osml` --> `dist/index.html`.
-`static/` is for static files like images where `static/cat.gif` --> `dist/static/cat.gif`.
+For example, `src/index.osml --> dist/index.html`.
+`static/` is for static files like images where `static/cat.gif --> dist/static/cat.gif`.
 
 ### Using OSML
 

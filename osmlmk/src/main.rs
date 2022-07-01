@@ -64,14 +64,24 @@ impl std::string::ToString for RunCommand {
 }
 
 pub struct RunContext {
+    success: bool,
     lame: bool,
     dryrun: bool,
     project_dir: String,
     command: RunCommand,
 }
 
+impl Drop for RunContext {
+    fn drop(&mut self) {
+        if self.success {
+        } else {
+        }
+    }
+}
+
 fn cli(args: Vec<String>) -> RunContext {
     let mut ctx = RunContext {
+        success: false,
         lame: false,
         dryrun: false,
         project_dir: String::new(),
@@ -126,7 +136,7 @@ fn cli(args: Vec<String>) -> RunContext {
 }
 
 fn io_error(str: &str, err: io::Error) -> ! {
-    eprintln!("{} {} {}", "Make Error".red().bold(), str, err.to_string());
+    eprintln!("{} {} {}", "Make Error:".red().bold(), str, err.to_string());
     std::process::exit(1);
 }
 
@@ -159,16 +169,16 @@ fn run(ctx: &RunContext) {
         _ => unimplemented!(),
     }
 
-    eprintln!(
-        "{} Successfully ran `{}` at {}",
-        "OK:".green().bold(),
-        ctx.command.to_string().yellow().bold(),
-        ctx.project_dir.blue().bold()
-    );
+            eprintln!(
+                "\n{} Successfully ran `{}` at {}",
+                "OK:".green().bold(),
+                ctx.command.to_string().yellow().bold(),
+                ctx.project_dir.blue()
+            );
 }
 
 fn cmd_init(pdir: &String) {
-    let creates = ["src/", "static/", "dist/"];
+    let creates = ["src/", "static/", "dist/", "dist/static/"];
     for create in creates {
         fs::create_dir(create).unwrap_or_else(|e| {
             if e.kind() != io::ErrorKind::AlreadyExists {
@@ -191,8 +201,8 @@ fn cmd_build(run_ctx: &RunContext, pdir: &String) {
         io_error(
             format!(
                 "Failed to load build on `{}` at `{}`",
-                "src/".blue().bold(),
-                pdir.blue().bold()
+                "src/".blue(),
+                pdir.blue()
             )
             .as_str(),
             e,
@@ -202,8 +212,8 @@ fn cmd_build(run_ctx: &RunContext, pdir: &String) {
         io_error(
             format!(
                 "Failed to execute build on `{}` at `{}`",
-                "src/".blue().bold(),
-                pdir.blue().bold()
+                "src/".blue(),
+                pdir.blue()
             )
             .as_str(),
             e,
@@ -237,7 +247,7 @@ fn cmd_clean(pdir: &String) {
     errors.iter().for_each(|(name, e)| {
         eprintln!(
             "{} Could not remove `{}` in `{}` {}",
-            "Make Error".red().bold(),
+            "Make Error:".red().bold(),
             name.blue(),
             pdir.blue(),
             e
