@@ -170,7 +170,7 @@ fn run(ctx: &RunContext) {
     }
 
             eprintln!(
-                "\n{} Successfully ran `{}` at {}",
+                "\n\t{} Successfully ran `{}` at {}",
                 "OK:".green().bold(),
                 ctx.command.to_string().yellow().bold(),
                 ctx.project_dir.blue()

@@ -43,7 +43,7 @@ impl LoadBuildConfig {
             );
             errors
                 .iter()
-                .for_each(|(f, e)| eprint!("\n\t`{}`: \"{}\"", f.blue(), e));
+                .for_each(|(f, e)| eprint!("\n`{}`: \"{}\"", f.blue(), e));
             eprint!("\n");
             std::process::exit(1);
         }
@@ -140,7 +140,7 @@ pub fn execute_build(run_ctx: &RunContext, build_ctx: &mut BuildContext) -> io::
         fs::remove_file(remove_static).unwrap_or_else(|e| {
             eprintln!(
                 "{} Unable to access `{}` {}",
-                "\tError:".red().bold(),
+                "Error:".red().bold(),
                 remove_static.blue(),
                 e
             );
@@ -151,7 +151,7 @@ pub fn execute_build(run_ctx: &RunContext, build_ctx: &mut BuildContext) -> io::
         }
         eprintln!(
             "{} {} --> {}",
-            "\tOK:".green().bold(),
+            "OK:".green().bold(),
             remove_static.bold(),
             "/dev/null".bold()
         )
@@ -263,20 +263,18 @@ fn compile_source(
         if !out.stderr.is_empty() {
             eprintln!(
                 "{} {} --> {}",
-                "\tError:".red().bold(),
+                "Error:".red().bold(),
                 src_name.bold(),
                 dst_name.bold(),
             );
-            eprintln!("---------\n");
             for b in out.stderr {
                 eprint!("{}", b as char)
             }
-            eprintln!("---------\n");
             std::process::exit(1);
         } else {
             eprintln!(
                 "{} {} --> {}",
-                "\tOK:".green().bold(),
+                "OK:".green().bold(),
                 src_name.bold(),
                 dst_name.bold(),
             );
@@ -298,7 +296,7 @@ fn compile_static(src: &String) {
         });
         eprintln!(
             "{} {} --> {}",
-            "\tOK:".green().bold(),
+            "OK:".green().bold(),
             src.bold(),
             dst_name.bold(),
         );

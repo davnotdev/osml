@@ -1,5 +1,7 @@
 use super::*;
 
+//  Just a quick test missing many many edge cases.
+
 #[test]
 fn test_parsers() {
     let my_osml = r"
@@ -16,7 +18,7 @@ Hello to everyone who is reading this.
 This sentence should be on the same line.
 
 Although, this one will not be.
-Hopefully, *all* \~~tests\~~ /will/ be _green_, and all will be good.
+Hopefully, *all* \~tests\~ /will/ be _green_, and all will be good.
 
 ]
 
@@ -33,9 +35,8 @@ This is just normal text.
 
     let expected_result = "\
 <html>\
-    <head>head</head>\
+    <head></head>\
     <body>\
-        body\
         <div class='abc'>Hello World</div>\
         <div class='nested'><div class='nested'>Ok?</div></div>\
         <plugin>\
@@ -43,7 +44,7 @@ This is just normal text.
             Hello to everyone who is reading this. \
             This sentence should be on the same line. <br><br>\
             Although, this one will not be. \
-            Hopefully, <b>all</b> ~~tests~~ <i>will</i> be <u>green</u>, and all will be good. <br><br>\
+            Hopefully, <b>all</b> ~tests~ <i>will</i> be <u>green</u>, and all will be good. <br><br>\
         </plugin>\
         <div class='lists'>\
             <br><br>\
@@ -68,9 +69,10 @@ This is just normal text.
     ) -> Result<(Line, Pos, String)> {
         output = format!("{}<plugin>", output);
         let mut last_list_was_ordered = None;
+        let start_line = line;
         loop {
             let (done, nline, npos, noutput, nlast_list_was_ordered) =
-                parse_text_line(lines, line, pos, output, ctx, true, last_list_was_ordered)?;
+                parse_text_line(lines, line, pos, output, ctx, true, start_line, last_list_was_ordered)?;
 
             line = nline;
             pos = npos;
@@ -88,8 +90,6 @@ This is just normal text.
         my_osml.to_string(),
         Context {
             plugins: HashMap::from([("plugin".to_string(), my_plugin as ExtCallback)]),
-            head_insert: "head".to_string(),
-            body_insert: "body".to_string(),
         },
     )
     .unwrap();

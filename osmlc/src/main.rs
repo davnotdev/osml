@@ -1,5 +1,5 @@
 use colored::Colorize;
-use libosml::{parse, Context};
+use libosml::{parse, Context, Error, Location};
 use std::fs;
 
 fn help_and_exit() -> ! {
@@ -141,8 +141,9 @@ fn run(ctx: &RunContext) {
         std::process::exit(1)
     });
 
-    let parsed = parse(input, Context::create(String::new(), String::new())).unwrap_or_else(|e| {
-        eprintln!("{} {:?}", "Error:".red().bold(), e);
+    let parsed = parse(input.clone(), Context::create()).unwrap_or_else(|e| {
+        let lines = input.split('\n').map(|s| s.to_string()).collect();
+        print_error(&ctx.input, lines, e);
         std::process::exit(1);
     });
 
@@ -157,4 +158,43 @@ fn run(ctx: &RunContext) {
             std::process::exit(1)
         });
     }
+}
+
+fn print_error(file: &String, lines: Vec<String>, Error { error, location }: Error) {
+    match location {
+        Location::Null => unreachable!("Location::Null is only used internally"),
+        Location::Absolute(line) => {
+            let line_number_spaces = (0..(line.to_string().len()))
+                .map(|_| ' ')
+                .collect::<String>();
+
+            eprintln!("{} {}", "Error:".red().bold(), error.message().bold());
+            eprintln!("  {} --> {}", line_number_spaces, file);
+            peek_print_error_line(&lines, line, -2, &line_number_spaces);
+            peek_print_error_line(&lines, line, -1, &line_number_spaces);
+            eprintln!(
+                "  {} {} {}",
+                (line + 1).to_string().blue().bold(),
+                "|".cyan().bold(),
+                lines.get(line).unwrap()
+            );
+            peek_print_error_line(&lines, line, 1, &line_number_spaces);
+            peek_print_error_line(&lines, line, 2, &line_number_spaces);
+        }
+    }
+}
+
+fn peek_print_error_line(lines: &Vec<String>, line: usize, inc: isize, line_number_spaces: &String) {
+    let last_line = (|| {
+        let idx: usize = (line as isize + inc).try_into().ok()?;
+        Some(lines.get(idx)?)
+    })()
+    .unwrap_or(&"".to_string())
+    .clone();
+    eprintln!(
+        "  {} {} {}",
+        line_number_spaces,
+        "|".blue().bold(),
+        last_line
+    );
 }
